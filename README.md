@@ -54,7 +54,7 @@ Klicke einfach auf den folgenden Button, um das Repository direkt zu deinem Home
   * Unterstützte Methoden: `Shelly.GetDeviceInfo`, `Shelly.GetStatus`, `Shelly.GetConfig`, `EM.GetStatus` (id: 0), `EM.GetConfig`, `EMData.GetStatus` (id: 0), `Sys.GetStatus`, `Wifi.GetStatus` uvm.
 * **Automatische mDNS/Zeroconf Erkennung**:
   * Sendet `_shelly._tcp` und `_http._tcp` mit realistischen TXT-Records (`model=SPEM-003CEBEU`, `gen=2`, `app=Pro3EM`), damit die Anker App das Gerät sofort im WLAN findet.
-* **Ingress Web-Dashboard (Port 8099)**:
+* **Ingress Web-Dashboard (Port 8239)**:
   * Integriertes Dashboard direkt in der Home Assistant Seitenleiste mit Live-Leistungsanzeige und Request-Logger für unbekannte Anfragen.
 
 ---

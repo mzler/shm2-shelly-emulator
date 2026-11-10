@@ -80,7 +80,7 @@ This enables devices like the **Anker SOLIX Solarbank 3 Pro** (and other solar/b
 | `multicast_port` | integer | `9522` | SMA Speedwire UDP port. |
 | `http_port` | integer | `80` | Port for the Shelly HTTP API (must be `80` for standard Shelly discovery). |
 | `udp_port` | integer | `1010` | Port for Shelly UDP RPC. |
-| `ingress_port` | integer | `8099` | Internal port used by Home Assistant Ingress for the Web UI. |
+| `ingress_port` | integer | `8239` | Internal port used by Home Assistant Ingress for the Web UI. |
 | `emulated_mac` | string | `""` | Custom MAC address (e.g. `34:98:7A:5B:CD:12`). If empty, a stable MAC is automatically generated and preserved. |
 | `device_name` | string | `Shelly Pro 3EM` | Display name for the emulated device. |
 | `firmware_version` | string | `1.4.4` | Emulated firmware version reported to apps. |

@@ -727,7 +727,12 @@ class WebServer:
                 await site_ingress.start()
                 logger.info("Add-on Ingress dashboard listening on 0.0.0.0:%d", self.config.ingress_port)
             except OSError as e:
-                logger.warning("Could not bind Ingress port %d: %s", self.config.ingress_port, e)
+                logger.error(
+                    "Could not bind Ingress port %d: %s. Another service is using this port!",
+                    self.config.ingress_port,
+                    e,
+                )
+                raise
 
     async def stop(self) -> None:
         """Cleanly shutdown HTTP servers."""

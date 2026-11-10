@@ -18,7 +18,7 @@ Dieses Projekt ist ein **Home Assistant Add-on** (auch als eigenständiger Docke
    - **HTTP JSON-RPC** auf Port `80` (sowohl `POST /rpc` als auch `GET /rpc/<Method>?<params>`).
    - **UDP JSON-RPC** auf Port `1010`.
    - **mDNS / Zeroconf** Ankündigung (`_shelly._tcp` und `_http._tcp`), damit die Anker App das Gerät automatisch im WLAN findet.
-   - **Ingress Web-Dashboard** (Port `8099`) in Home Assistant mit Live-Leistungsanzeige und Request-Monitor.
+   - **Ingress Web-Dashboard** (Port `8239`) in Home Assistant mit Live-Leistungsanzeige und Request-Monitor.
 
 ---
 
@@ -102,7 +102,7 @@ Shelly3PM-HA-Emulator/
 ### `src/web_ui.py`
 - Basiert auf `aiohttp.web`.
 - Bedient HTTP JSON-RPC auf Port 80 (`/rpc` via POST und GET).
-- Liefert das interaktive Web-Dashboard für Home Assistant Ingress auf Port 8099.
+- Liefert das interaktive Web-Dashboard für Home Assistant Ingress auf Port 8239.
 
 ### `src/main.py`
 - Lädt die Konfiguration aus `/data/options.json` (Home Assistant) bzw. Umgebungsvariablen.
@@ -220,7 +220,7 @@ python3 -m src.main
 1. **`host_network: true`**:
    - Ist zwingend erforderlich, damit der Container die UDP-Multicast-Pakete (`239.12.255.254:9522`) und mDNS (`5353`) ohne NAT/Bridge empfangen kann.
 2. **KEINE `ports:`-Sektion in `config.yaml`**:
-   - Wenn `host_network: true` gesetzt ist, **verbietet** der Home Assistant Supervisor eine `ports:`-Mapping-Sektion (`Cannot use host_network with ports`). Die Ports (80, 1010, 8099) sind durch Host-Networking automatisch direkt auf dem Host offen.
+   - Wenn `host_network: true` gesetzt ist, **verbietet** der Home Assistant Supervisor eine `ports:`-Mapping-Sektion (`Cannot use host_network with ports`). Die Ports (80, 1010, 8239) sind durch Host-Networking automatisch direkt auf dem Host offen.
 3. **`init: false` in `config.yaml`**:
    - Verhindert, dass der Supervisor seinen eigenen `s6-overlay`-Manager injectet, was sonst zu Abstürzen (`can only run as pid 1`) führt.
 4. **KEINE `build.yaml` verwenden**:

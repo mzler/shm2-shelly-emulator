@@ -55,7 +55,7 @@ class AppConfig:
 
     http_port: int = 80
     udp_port: int = 1010
-    ingress_port: int = 8099
+    ingress_port: int = 8239
 
     invert_sign: bool = False
     stale_timeout: float = 10.0
@@ -129,7 +129,7 @@ class AppConfig:
 
         http_port = int(raw_options.get("http_port", os.getenv("HTTP_PORT", 80)))
         udp_port = int(raw_options.get("udp_port", os.getenv("UDP_PORT", 1010)))
-        ingress_port = int(raw_options.get("ingress_port", os.getenv("INGRESS_PORT", 8099)))
+        ingress_port = int(raw_options.get("ingress_port", os.getenv("INGRESS_PORT", 8239)))
 
         invert_sign = bool(raw_options.get("invert_sign", os.getenv("INVERT_SIGN", "false").lower() in ("true", "1", "yes")))
         stale_timeout = float(raw_options.get("stale_timeout", os.getenv("STALE_TIMEOUT", 10.0)))

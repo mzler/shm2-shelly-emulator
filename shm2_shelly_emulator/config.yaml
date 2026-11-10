@@ -1,7 +1,7 @@
 name: "SHM2 Shelly Emulator"
 slug: "shm2_shelly_emulator"
 description: "Emulates a Shelly Pro 3EM (Gen 2) from SMA Sunny Home Manager 2.0 (Speedwire multicast) or Home Assistant entities for Anker SOLIX Solarbank."
-version: "1.0.4"
+version: "1.0.5"
 url: "https://github.com/mzler/shm2-shelly-emulator"
 init: false
 arch:
@@ -15,7 +15,7 @@ boot: auto
 host_network: true
 homeassistant_api: true
 ingress: true
-ingress_port: 8099
+ingress_port: 8239
 options:
   data_source: "speedwire"
   shm2_serial: ""
@@ -24,7 +24,7 @@ options:
   multicast_port: 9522
   http_port: 80
   udp_port: 1010
-  ingress_port: 8099
+  ingress_port: 8239
   emulated_mac: ""
   device_name: "Shelly Pro 3EM"
   firmware_version: "1.4.4"
