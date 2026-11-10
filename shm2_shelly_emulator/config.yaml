@@ -1,0 +1,76 @@
+name: "SHM2 Shelly Emulator"
+slug: "shm2_shelly_emulator"
+description: "Emulates a Shelly Pro 3EM (Gen 2) from SMA Sunny Home Manager 2.0 (Speedwire multicast) or Home Assistant entities for Anker SOLIX Solarbank."
+version: "1.0.4"
+url: "https://github.com/mzler/shm2-shelly-emulator"
+init: false
+arch:
+  - aarch64
+  - amd64
+  - armv7
+  - armhf
+  - i386
+startup: services
+boot: auto
+host_network: true
+homeassistant_api: true
+ingress: true
+ingress_port: 8099
+options:
+  data_source: "speedwire"
+  shm2_serial: ""
+  network_interface: ""
+  multicast_ip: "239.12.255.254"
+  multicast_port: 9522
+  http_port: 80
+  udp_port: 1010
+  ingress_port: 8099
+  emulated_mac: ""
+  device_name: "Shelly Pro 3EM"
+  firmware_version: "1.4.4"
+  invert_sign: false
+  stale_timeout: 10
+  log_level: "INFO"
+  debug_requests: true
+  ha_entities:
+    total_power: "sensor.grid_power"
+    power_l1: "sensor.grid_power_l1"
+    power_l2: "sensor.grid_power_l2"
+    power_l3: "sensor.grid_power_l3"
+    voltage_l1: "sensor.grid_voltage_l1"
+    voltage_l2: "sensor.grid_voltage_l2"
+    voltage_l3: "sensor.grid_voltage_l3"
+    current_l1: ""
+    current_l2: ""
+    current_l3: ""
+    energy_import: "sensor.grid_energy_import"
+    energy_export: "sensor.grid_energy_export"
+schema:
+  data_source: "list(speedwire|homeassistant)"
+  shm2_serial: str?
+  network_interface: str?
+  multicast_ip: str
+  multicast_port: port
+  http_port: port
+  udp_port: port
+  ingress_port: port
+  emulated_mac: str?
+  device_name: str
+  firmware_version: str
+  invert_sign: bool
+  stale_timeout: int
+  log_level: "list(DEBUG|INFO|WARNING|ERROR)"
+  debug_requests: bool
+  ha_entities:
+    total_power: str?
+    power_l1: str?
+    power_l2: str?
+    power_l3: str?
+    voltage_l1: str?
+    voltage_l2: str?
+    voltage_l3: str?
+    current_l1: str?
+    current_l2: str?
+    current_l3: str?
+    energy_import: str?
+    energy_export: str?
