@@ -1,7 +1,7 @@
 name: "SHM2 Shelly Emulator"
 slug: "shm2_shelly_emulator"
-description: "Emulates a Shelly Pro 3EM (Gen 2) from SMA Sunny Home Manager 2.0 (Speedwire multicast) or Home Assistant entities for Anker SOLIX Solarbank."
-version: "1.0.5"
+description: "Intelligente Solarbank-Steuerung (Nulleinspeisung/Peak-Shaving), SMA Live-Monitoring & Shelly Pro 3EM Emulation für SMA Sunny Home Manager 2.0."
+version: "1.1.0"
 url: "https://github.com/mzler/shm2-shelly-emulator"
 init: false
 arch:

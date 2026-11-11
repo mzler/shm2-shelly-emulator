@@ -199,6 +199,35 @@ Dadurch kann z. B. die **Anker SOLIX Solarbank 3 Pro** (sowie andere Speicher- u
 
 ---
 
+### Visual Automation Builder & Intelligente Solarbank-Steuerung (v1.1.0)
+
+Da die offizielle Anker Smartphone-App das Hinzufügen von Shelly Smart Metern ausschließlich über einen Allterco Shelly Cloud OAuth-Login erlaubt (wodurch Software-Emulatoren in der App blockiert sind), bietet dieses Add-on ab Version 1.1.0 eine **voll integrierte visuelle Steuerung**:
+
+Über das integrierte Ingress-Web-Dashboard steuert das Add-on die Solarbank direkt über die in Home Assistant installierte Anker-Integration (`ha-anker-solix` oder Modbus TCP) – unter direkter Nutzung der SMA SHM2 Speedwire-Echtzeitdaten!
+
+#### Die 4 Tabs im Web-Dashboard:
+1. **Live-Monitor (SMA Telemetrie)**:
+   * Große Anzeige der Netzwirkleistung (+ Bezug / − Einspeisung) mit Richtungsanzeige und Aktualisierungsalter.
+   * Phasengenaue Kacheln für L1, L2 und L3 mit Wirkleistung (W), Spannung (V), Strom (A), Power Factor ($\cos \phi$), Netzfrequenz (Hz) sowie getrennten Zählerständen für Bezug und Einspeisung (kWh).
+   * Live-Status der angebundenen Anker Solarbank (Akkustand %, Solarladung W, aktuelle Abgabe W).
+2. **Automations-Builder**:
+   * Master-Schalter zum Aktivieren/Pausieren der Regelung per Klick.
+   * Auswahl der intelligenten Regelungsmodi (Nulleinspeisung, Spitzenlastkappung, Nacht-Grundlast, Akku-Priorität).
+   * Automatische Entitätserkennung aus Home Assistant mit Vorfilterung für Anker Solarbank Entitäten (`number.*preset_discharge_power`, `sensor.*battery_percentage` etc.).
+   * Einstellbare Parameter: Mindest- und Maximalleistung (0–800 W), Hysterese/Totband (W), Aktualisierungsintervall (s), Mindest-Akkustand (Min SoC %) zum Schutz der Batterie.
+3. **Regelungs-Protokoll**:
+   * Live-Tabelle der letzten 50 Steuerungsentscheidungen mit Zeitstempel, Modus, Netzleistung, Akku %, Solarleistung, altem und neuem Sollwert sowie verständlicher Begründung.
+4. **Shelly RPC Monitor**:
+   * Live-Inspektor aller eingehenden HTTP- und UDP-Anfragen an die Shelly-Schnittstelle zur Fehlerdiagnose.
+
+#### Die 4 Optimierungs-Modi im Detail:
+* **Dynamische Nulleinspeisung (Grid Following)**: Passt die Entladeleistung der Solarbank kontinuierlich so an, dass der Netzbezug am SMA Home Manager genau 0 W beträgt ($P_{\text{Ziel}} = P_{\text{aktuell}} + P_{\text{Netzbezug}}$).
+* **Spitzenlastkappung (Peak Shaving)**: Die Solarbank speist nur dann ein, wenn der Hausverbrauch einen definierten Schwellenwert (z. B. 1000 W) übersteigt, um Lastspitzen abzufedern und den Akku für die teuersten Verbrauchsphasen zu schonen.
+* **Nacht-Grundlast (Constant Base Load)**: Speist während der Nachtstunden (wenn keine PV-Erzeugung anliegt) eine feste Grundlast (z. B. 150 W) ein.
+* **Akku-Priorität (Solar Priority)**: Entlädt den Akku erst dann, wenn er mindestens bis zu einem gewünschten Ziel-Akkustand (z. B. 80 %) aufgeladen wurde.
+
+---
+
 ### Wichtige Hinweise zu Multicast, IGMP-Snooping und VLANs
 
 * **`host_network: true` ist zwingend erforderlich**:

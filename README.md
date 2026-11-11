@@ -54,8 +54,15 @@ Klicke einfach auf den folgenden Button, um das Repository direkt zu deinem Home
   * Unterstützte Methoden: `Shelly.GetDeviceInfo`, `Shelly.GetStatus`, `Shelly.GetConfig`, `EM.GetStatus` (id: 0), `EM.GetConfig`, `EMData.GetStatus` (id: 0), `Sys.GetStatus`, `Wifi.GetStatus` uvm.
 * **Automatische mDNS/Zeroconf Erkennung**:
   * Sendet `_shelly._tcp` und `_http._tcp` mit realistischen TXT-Records (`model=SPEM-003CEBEU`, `gen=2`, `app=Pro3EM`), damit die Anker App das Gerät sofort im WLAN findet.
+* **Visueller Automations-Builder & Intelligente Solarbank-Regelung (v1.1.0)**:
+  * Integriertes Web-Dashboard (Home Assistant Ingress auf Port 8239).
+  * Direkte Ansteuerung der Anker Solarbank über die Home Assistant Integration (`ha-anker-solix` / Modbus).
+  * 4 clevere Regelungsmodi: **Dynamische Nulleinspeisung** (Grid Following), **Spitzenlastkappung** (Peak Shaving), **Nacht-Grundlast** und **Akku-Priorität**.
+  * Konfigurierbare Hysterese/Totband, Mindest-Akkustand (Min SoC %) und Live-Protokoll aller Steuerungsentscheidungen.
 * **Ingress Web-Dashboard (Port 8239)**:
-  * Integriertes Dashboard direkt in der Home Assistant Seitenleiste mit Live-Leistungsanzeige und Request-Logger für unbekannte Anfragen.
+  * Live-Telemetrie des SMA Sunny Home Manager 2.0 (Netzbezug/Einspeisung, L1/L2/L3 Wirkleistung, Spannung, Strom, Frequenz, Zählerstände).
+  * Visueller Automation-Editor mit automatischer Erkennung von Solarbank-Entitäten.
+  * Live Request-Logger für unbekannte Shelly-Anfragen.
 
 ---
 

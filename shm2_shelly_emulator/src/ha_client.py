@@ -248,3 +248,81 @@ class HomeAssistantClient:
                 logger.error("Error in Home Assistant polling loop: %s", e)
 
             await asyncio.sleep(self.poll_interval)
+
+    # -------------------------------------------------------------------------
+    # Solarbank Automation & Generic HA API Control
+    # -------------------------------------------------------------------------
+
+    async def get_all_entities(self) -> list[dict[str, Any]]:
+        """Fetch all entity states from Home Assistant."""
+        if aiohttp is None:
+            return []
+
+        if self._session is None:
+            self._session = aiohttp.ClientSession()
+
+        url = f"{self.api_url}/states"
+        headers = {}
+        if self.token:
+            headers["Authorization"] = f"Bearer {self.token}"
+
+        try:
+            async with self._session.get(url, headers=headers, timeout=aiohttp.ClientTimeout(total=5.0)) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    if isinstance(data, list):
+                        return data
+                else:
+                    logger.warning("Home Assistant returned HTTP %d on /api/states", resp.status)
+        except Exception as e:
+            logger.debug("Failed to fetch states from Home Assistant: %s", e)
+        return []
+
+    async def get_entity_state(self, entity_id: str) -> Optional[dict[str, Any]]:
+        """Fetch state for a single entity."""
+        if aiohttp is None or not entity_id:
+            return None
+        if self._session is None:
+            self._session = aiohttp.ClientSession()
+        return await self._get_entity_state(self._session, entity_id)
+
+    async def call_service(self, domain: str, service: str, service_data: dict[str, Any]) -> bool:
+        """Call a Home Assistant service (e.g. number.set_value)."""
+        if aiohttp is None:
+            return False
+
+        if self._session is None:
+            self._session = aiohttp.ClientSession()
+
+        url = f"{self.api_url}/services/{domain}/{service}"
+        headers = {"Content-Type": "application/json"}
+        if self.token:
+            headers["Authorization"] = f"Bearer {self.token}"
+
+        try:
+            async with self._session.post(url, headers=headers, json=service_data, timeout=aiohttp.ClientTimeout(total=5.0)) as resp:
+                if resp.status in (200, 201):
+                    logger.debug("Service %s.%s executed successfully: %s", domain, service, service_data)
+                    return True
+                else:
+                    body = await resp.text()
+                    logger.warning("Service %s.%s failed (HTTP %d): %s", domain, service, resp.status, body)
+                    return False
+        except Exception as e:
+            logger.error("Error calling service %s.%s: %s", domain, service, e)
+            return False
+
+    async def set_number_value(self, entity_id: str, value: float) -> bool:
+        """Set a target numeric value for a number or input_number entity."""
+        if not entity_id:
+            return False
+
+        domain = entity_id.split(".")[0] if "." in entity_id else "number"
+        if domain not in ("number", "input_number"):
+            domain = "number"
+
+        return await self.call_service(
+            domain=domain,
+            service="set_value",
+            service_data={"entity_id": entity_id, "value": round(value, 1)},
+        )

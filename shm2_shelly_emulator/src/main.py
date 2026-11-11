@@ -10,6 +10,7 @@ import time
 from typing import Optional
 
 from src.config import AppConfig
+from src.controller import AutomationController
 from src.ha_client import HomeAssistantClient
 from src.mdns_service import MdnsService
 from src.models import MeterData
@@ -78,9 +79,17 @@ async def async_main() -> None:
 
     shelly_service = ShellyService(config)
 
-    # 1. Initialize Data Source
+    # 1. Initialize Home Assistant client (used for Solarbank automation & entity discovery)
+    ha_client = HomeAssistantClient(
+        api_url=config.ha_url,
+        token=config.ha_token,
+        entity_map=config.ha_entities,
+        poll_interval=1.0,
+        on_data_callback=shelly_service.update_meter_data if config.data_source == "homeassistant" else None,
+    )
+
+    # Initialize grid telemetry data source
     speedwire_receiver: Optional[SpeedwireReceiver] = None
-    ha_client: Optional[HomeAssistantClient] = None
 
     if config.data_source == "speedwire":
         speedwire_receiver = SpeedwireReceiver(
@@ -92,31 +101,28 @@ async def async_main() -> None:
         )
         await speedwire_receiver.start()
     elif config.data_source == "homeassistant":
-        ha_client = HomeAssistantClient(
-            api_url=config.ha_url,
-            token=config.ha_token,
-            entity_map=config.ha_entities,
-            poll_interval=1.0,
-            on_data_callback=shelly_service.update_meter_data,
-        )
         await ha_client.start()
     else:
         logger.error("Unknown data_source '%s'. Valid values: 'speedwire', 'homeassistant'", config.data_source)
         sys.exit(1)
 
-    # 2. Start UDP RPC on port 1010
+    # 2. Initialize Solarbank Intelligent Automation Controller
+    automation_controller = AutomationController(ha_client, shelly_service)
+    await automation_controller.start()
+
+    # 3. Start UDP RPC on port 1010
     udp_server = UdpRpcServer(shelly_service, port=config.udp_port)
     await udp_server.start()
 
-    # 3. Start HTTP server on port 80 & Ingress port
-    web_server = WebServer(config, shelly_service)
+    # 4. Start HTTP server on port 80 & Ingress port
+    web_server = WebServer(config, shelly_service, automation_controller, ha_client)
     await web_server.start()
 
-    # 4. Start mDNS announcement (_shelly._tcp and _http._tcp)
+    # 5. Start mDNS announcement (_shelly._tcp and _http._tcp)
     mdns_service = MdnsService(config)
     await mdns_service.start()
 
-    # 5. Start periodic logger
+    # 6. Start periodic logger
     logger_task = asyncio.create_task(periodic_logger_task(shelly_service, interval=10.0))
 
     # Graceful shutdown event
@@ -143,13 +149,13 @@ async def async_main() -> None:
     finally:
         logger.info("Shutting down background services...")
         logger_task.cancel()
+        await automation_controller.stop()
         await mdns_service.stop()
         await web_server.stop()
         await udp_server.stop()
         if speedwire_receiver:
             await speedwire_receiver.stop()
-        if ha_client:
-            await ha_client.stop()
+        await ha_client.stop()
         logger.info("SHM2 Shelly Emulator stopped cleanly.")
 
 
